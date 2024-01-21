@@ -81,7 +81,7 @@ app.use('/ip', async (req, res, next) => {
     const ipInfoResponse = await axios.get(`https://ipinfo.io/${clientIP}?token=597ca5cf40baef`);
     const { ip, loc } = ipInfoResponse.data;
 
-    console.log(`IP: ${ip} | Location: ${loc}`);
+    console.log(ipInfoResponse.data);
     
     // Thêm thông tin IP vào danh sách
     ipList.push({ ip, location: loc });
