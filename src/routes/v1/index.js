@@ -6,6 +6,7 @@ import { orderRoutes } from './Route/order.route'
 import { noticeRoutes } from './Route/notice.route'
 import { blackListRoutes } from './Route/blackList.route'
 import { ipRoutes } from './Route/ip.route'
+import { websiteRoutes } from './Route/website.route'
 const router = express.Router()
 
 // GET v1/status
@@ -15,7 +16,7 @@ router.get('/status', (req, res) => res.status(HttpStatusCode.OK).json({
 
 //User APIs
 
-router.use('/ip', ipRoutes)
+// router.use('/ip', ipRoutes)
 
 router.use('/admin', adminRoutes)
 
@@ -26,5 +27,7 @@ router.use('/order', orderRoutes)
 router.use('/notice', noticeRoutes)
 
 router.use('/blackList', blackListRoutes)
+
+router.use('/website', websiteRoutes)
 
 export const apiV1 = router

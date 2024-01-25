@@ -17,9 +17,19 @@ const createNewIP = async (data) => {
     }
 }
 
-const getSearchIPForAdmin = async (data) => {
+const getFullIP = async (data) => {
     try {
-        const user = await IpModel.getSearchIPForAdmin(data)
+        const order = await IpModel.getFullIP(data)
+        const transformOrder = cloneDeep(order)
+        return transformOrder
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getSearchIP = async (data) => {
+    try {
+        const user = await IpModel.getSearchIP(data)
         const transformIP = cloneDeep(user)
         return transformIP
     } catch (error) {
@@ -28,6 +38,7 @@ const getSearchIPForAdmin = async (data) => {
 }
 
 export const ipService = { 
-    createNewIP
-    // getSearchIPForAdmin
+    createNewIP,
+    getFullIP,
+    getSearchIP
 }

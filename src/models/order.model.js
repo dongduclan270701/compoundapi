@@ -128,49 +128,6 @@ const updateOrderInformationForAdmin = async (id, data) => {
     }
 }
 
-const findUserAndUpdateOrderList = async (email, data) => {
-    try {
-        const newData = {
-            orderId: data.orderId,
-            product: [
-                {
-                    img: data.product[0].img,
-                    nameProduct: data.product[0].nameProduct,
-                    src: data.product[0].src,
-                    quantity: data.product[0].quantity,
-                    nowPrice: data.product[0].nowPrice,
-                    collection: data.product[0].collection
-                }],
-            shipping_process: data.shipping_process,
-            status: data.status,
-            sumOrder: data.sumOrder,
-            ship: data.ship
-        }
-        const updateUser = await getDB().collection('users').findOneAndUpdate(
-            { email: email },
-            { $push: { orders: { $each: [newData], $position: 0 } } },
-            { returnDocument: 'after' }
-        )
-        return updateUser.value
-    }
-    catch (error) {
-        throw new Error(error)
-    }
-}
-
-const ratingOrder = async (id, data) => {
-    try {
-        const updateOrder = await getDB().collection(orderName).findOneAndUpdate(
-            { orderId: id },
-            { $set: { statusReview: data } },
-            { returnDocument: 'after' }
-        )
-        return updateOrder.value
-    } catch (error) {
-        throw new Error(error)
-    }
-}
-
 const getSearchOrder = async (data) => {
     try {
         let perPage = 10

@@ -45,4 +45,10 @@ const ip = async (req, res, next) => {
 router.route('/ipUser')
     .post(ip, ipController.createNewIP)
 
+router.route('/ipList')
+    .get(authAdmin, ipController.getFullIP)
+
+router.route('/searchIpList')
+    .get(authAdmin, ipController.getSearchIP)
+
 export const ipRoutes = router

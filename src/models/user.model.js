@@ -153,7 +153,6 @@ const updateUserInformationForAdmin = async (phoneNumber, data) => {
 
 const getSearchUserForAdmin = async (data) => {
     try {
-        console.log(data)
         let perPage = 10
         let page = parseInt(data.count)
         let status = data.status

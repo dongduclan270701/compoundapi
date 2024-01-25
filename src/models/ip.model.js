@@ -9,7 +9,7 @@ const accountUserCollectionSchema = Joi.object({
     country: Joi.string().required(),
     postal: Joi.string().required(),
     timezone: Joi.string().required(),
-    count: Joi.number().default(0),
+    count: Joi.number().default(1),
     _destroy: Joi.boolean().default(false)
 })
 
@@ -60,30 +60,40 @@ const findOneById = async (id) => {
     }
 }
 
-const getSearchUserForAdmin = async (data) => {
+const getFullIP = async (data) => {
     try {
-        console.log(data)
         let perPage = 10
         let page = parseInt(data.count)
-        let status = data.status
-        if (status === '') {
-            status = { $in: [true, false] }
-        } else {
-            status = status === 'true' ? true : false
-        }
+        const result = await getDB().collection(accountUserCollectionName)
+            .find({})
+            .sort({
+                'count': -1
+            })
+            .limit(perPage)
+            .skip((perPage * page) - perPage)
+            .toArray()
+        const resultTotal = await getDB().collection(accountUserCollectionName).find().toArray()
+        return { data: [...result], total: resultTotal.length }
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getSearchIP = async (data) => {
+    try {
+        let perPage = 10
+        let page = parseInt(data.count)
         const result = await getDB().collection(accountUserCollectionName)
             .aggregate([
                 {
                     $match: {
-                        phoneNumber: { $regex: new RegExp(data.phoneNumber, 'i') },
-                        status: status,
+                        ip: { $regex: new RegExp(data.ip, 'i') },
                         _destroy: false
                     }
                 }
             ])
             .sort({
-                'createDate.time': -1,
-                'createDate.date': -1
+                'count': -1
             })
             .skip((perPage * page) - perPage)
             .limit(perPage)
@@ -91,8 +101,7 @@ const getSearchUserForAdmin = async (data) => {
         const resultTotal = await getDB().collection(accountUserCollectionName).aggregate([
             {
                 $match: {
-                    phoneNumber: { $regex: new RegExp(data.phoneNumber, 'i') },
-                    status: status,
+                    ip: { $regex: new RegExp(data.ip, 'i') },
                     _destroy: false
                 }
             }
@@ -103,9 +112,9 @@ const getSearchUserForAdmin = async (data) => {
     }
 }
 
-
 export const IpModel = {
     createNewIP,
     findOneById,
-    getSearchUserForAdmin
+    getFullIP,
+    getSearchIP
 }

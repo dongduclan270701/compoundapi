@@ -13,11 +13,23 @@ const createNewIP = async (req, res) => {
     }
 }
 
-
-const getSearchUserForAdmin = async (req, res) => {
+const getFullIP = async (req, res) => {
     try {
         const data = req.query
-        const result = await ipService.getSearchUserForAdmin(data)
+        const result = await ipService.getFullIP(data)
+        res.status(HttpStatusCode.OK).json(result)
+
+    } catch (error) {
+        res.status(HttpStatusCode.INTERNAL_SERVER).json({
+            error: error.message
+        })
+    }
+}
+
+const getSearchIP = async (req, res) => {
+    try {
+        const data = req.query
+        const result = await ipService.getSearchIP(data)
         res.status(HttpStatusCode.OK).json(result)
     } catch (error) {
         res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -29,5 +41,6 @@ const getSearchUserForAdmin = async (req, res) => {
 
 export const ipController = {
     createNewIP,
-    // getSearchUserForAdmin
+    getFullIP,
+    getSearchIP
 }
