@@ -16,7 +16,7 @@ router.get('/status', (req, res) => res.status(HttpStatusCode.OK).json({
 
 //User APIs
 
-// router.use('/ip', ipRoutes)
+router.use('/ip', ipRoutes)
 
 router.use('/admin', adminRoutes)
 
