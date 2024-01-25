@@ -8,10 +8,7 @@ const orderName = 'orderCompound'
 const orderSchema = Joi.object({
     pick_up_location: Joi.string().required(),
     destination: Joi.string().required(),
-    time: Joi.object({
-        hour: Joi.string().required(),
-        date: Joi.string().required()
-    }).required(),
+    note: Joi.string().required(),
     username: Joi.string().required(),
     phoneNumber: Joi.string().required(),
     status: Joi.string(),
@@ -36,24 +33,29 @@ const validateSchema = async (data) => {
 
 const createNewOrder = async (data) => {
     try {
-        const date = new Date();
-        const minutes = date.getMinutes();
-        const hours = date.getHours();
-        const time = `${hours}:${minutes}`;
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        const today = `${year}-${month}-${day}`;
+        const date = new Date()
+        const minutes = date.getMinutes().toString().padStart(2, '0')
+        const hours = date.getHours().toString().padStart(2, '0')
+        const time = `${hours}:${minutes}`
+        const day = date.getDate().toString().padStart(2, '0')
+        const month = (date.getMonth() + 1).toString().padStart(2, '0')
+        const year = date.getFullYear()
+        const today = `${year}-${month}-${day}`
         const id = crypto.randomBytes(12).toString('hex')
-        const newData = { 
-            ...data, 
-            orderId: id, 
-            createDate:{
-                time: time, 
+        const newData = {
+            ...data,
+            orderId: id,
+            createDate: {
+                time: time,
                 date: today
             },
-            status:'Chờ xác nhận'
+            status: 'Chờ xác nhận'
         }
+        const updateProduct = await getDB().collection('userCompound').findOneAndUpdate(
+            { phoneNumber: newData.phoneNumber },
+            { $inc: { totalOrder: 1 } },
+            { returnDocument: 'after' }
+        )
         const value = await validateSchema(newData)
         const result = await getDB().collection(orderName).insertOne(value)
         return result
@@ -75,7 +77,15 @@ const getFullOrderForAdmin = async (data) => {
     try {
         let perPage = 10
         let page = parseInt(data.count)
-        const result = await getDB().collection(orderName).find().limit(perPage).skip((perPage * page) - perPage).toArray()
+        const result = await getDB().collection(orderName)
+            .find({})
+            .sort({
+                'createDate.date': -1,
+                'createDate.time': -1
+            })
+            .limit(perPage)
+            .skip((perPage * page) - perPage)
+            .toArray()
         const resultTotal = await getDB().collection(orderName).find().toArray()
         return { data: [...result], total: resultTotal.length }
     } catch (error) {
@@ -165,38 +175,28 @@ const getSearchOrder = async (data) => {
     try {
         let perPage = 10
         let page = parseInt(data.count)
-        const result = await getDB().collection(orderName).aggregate([
-            {
-                $match: {
-                    status: { $regex: new RegExp(`${data.status === 'Chọn trạng thái' ? '' : data.status}`) },
-                    'shipping_process': {
-                        $elemMatch: {
-                            date: {
-                                $gte: data.firstDate,
-                                $lte: data.endDate
-                            },
-                            content: 'Ordered'
-                        }
-                    },
-                    orderId: { $regex: new RegExp(`${data.orderId}`) },
-                    _destroy: false
+        const result = await getDB().collection(orderName)
+            .aggregate([
+                {
+                    $match: {
+                        status: { $regex: new RegExp(`${data.status === 'Chọn trạng thái' ? '' : data.status}`) },
+                        phoneNumber: { $regex: new RegExp(`${data.phoneNumber}`) },
+                        _destroy: false
+                    }
                 }
-            }
-        ]).skip((perPage * page) - perPage).limit(perPage).toArray()
+            ])
+            .sort({
+                'createDate.date': -1,
+                'createDate.time': -1
+            })
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+            .toArray()
         const resultTotal = await getDB().collection(orderName).aggregate([
             {
                 $match: {
                     status: data.status,
-                    'shipping_process': {
-                        $elemMatch: {
-                            date: {
-                                $gte: data.firstDate,
-                                $lte: data.endDate
-                            },
-                            content: 'Ordered'
-                        }
-                    },
-                    orderId: { $regex: new RegExp(`${data.orderId}`) },
+                    phoneNumber: { $regex: new RegExp(`${data.phoneNumber}`) },
                     _destroy: false
                 }
             }
@@ -206,15 +206,11 @@ const getSearchOrder = async (data) => {
         throw new Error(error)
     }
 }
-export const orderModel = { 
-    createNewOrder, 
+export const orderModel = {
+    createNewOrder,
     getFullOrderForAdmin,
     getFullOrderInformationForAdmin,
     updateOrderInformationForAdmin,
-
-
-    findUserAndUpdateOrderList,
-    findOneById, 
-    getSearchOrder, 
-    ratingOrder 
+    findOneById,
+    getSearchOrder
 }

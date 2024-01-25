@@ -56,10 +56,17 @@ router.route('/login/:phoneNumber/:password')
 
 router.route('/accountUser/:phoneNumber')
     .get(authUser, userController.getInformationAccountUser)
-//     .put(authUser, UserValidation.updateAccountUser, userController.updateAccountUser)
+// .put(authUser, UserValidation.updateAccountUser, userController.updateAccountUser)
 
 router.route('/accountUserForAdmin/:phoneNumber')
     .get(authAdmin, userController.getInformationAccountUserForAdmin)
-    // .put(authAdmin, UserValidation.updateAccountUser, userController.updateAccountUser)
+    .put(authAdmin, UserValidation.updateUserInformationForAdmin, userController.updateUserInformationForAdmin)
+
+router.route('/accountUserForAdmin')
+    .get(authAdmin, userController.getFullUserForAdmin)
+
+router.route('/searchAccountUser')
+    .get(authAdmin, userController.getSearchUserForAdmin)
+
 
 export const userRoutes = router

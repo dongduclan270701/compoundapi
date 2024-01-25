@@ -3,11 +3,14 @@ import { HttpStatusCode } from '*/utils/constants'
 
 const createNewNotice = async (req, res, next) => {
     const condition = Joi.object({
-        time: Joi.string().required(),
-        date: Joi.string().required(),
+        username: Joi.string().required(),
+        phoneNumber: Joi.string().required(),
         content: Joi.string().required(),
         status: Joi.string().required(),
-        orderId: Joi.string().required()
+        createDate: Joi.object({
+            time: Joi.string().required(),
+            date: Joi.string().required()
+        }).required()
     })
     try {
         await condition.validateAsync(req.body, { abortEarly: false })

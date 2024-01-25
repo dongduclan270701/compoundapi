@@ -1,13 +1,9 @@
 import Joi from 'joi'
 import { HttpStatusCode } from '*/utils/constants'
 
-const createNewNotice = async (req, res, next) => {
+const createNewBlackListAccountUser = async (req, res, next) => {
     const condition = Joi.object({
-        time: Joi.string().required(),
-        date: Joi.string().required(),
-        content: Joi.string().required(),
-        status: Joi.string().required(),
-        orderId: Joi.string().required()
+        phoneNumber: Joi.string().required()
     })
     try {
         await condition.validateAsync(req.body, { abortEarly: false })
@@ -19,7 +15,7 @@ const createNewNotice = async (req, res, next) => {
     }
 }
 
-const getUpdateNotice = async (req, res, next) => {
+const updateUserInformationForAdmin = async (req, res, next) => {
     const condition = Joi.object({
     })
     try {
@@ -32,4 +28,4 @@ const getUpdateNotice = async (req, res, next) => {
     }
 }
 
-export const noticeValidation = { createNewNotice, getUpdateNotice }
+export const BlackListValidation = { createNewBlackListAccountUser, updateUserInformationForAdmin }

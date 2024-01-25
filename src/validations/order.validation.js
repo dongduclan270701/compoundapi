@@ -5,10 +5,7 @@ const createNewOrder = async (req, res, next) => {
     const condition = Joi.object({
         pick_up_location: Joi.string().required(),
         destination: Joi.string().required(),
-        time: Joi.object({
-            hour: Joi.string().required(),
-            date: Joi.string().required()
-        }).required(),
+        note: Joi.string().required(),
         username: Joi.string().required(),
         phoneNumber: Joi.string().required()
     })

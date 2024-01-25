@@ -54,11 +54,67 @@ const getInformationAccountUser = async (phoneNumber) => {
         throw new Error(error)
     }
 }
-
-const updateAccountAdmin = async (email, data) => {
+const getFullUserForAdmin = async (data) => {
     try {
-        const updatedAccountAdmin = await UserModel.updateAccountAdmin(email, data)
-        return updatedAccountAdmin
+        const user = await UserModel.getFullUserForAdmin(data)
+        const transformUser = cloneDeep(user)
+        return transformUser
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const updateUserInformationForAdmin = async (phoneNumber, data) => {
+    try {
+        const updateData = {
+            ...data,
+            updateAt: Date.now()
+        }
+        const updatedUser = await UserModel.updateUserInformationForAdmin(phoneNumber, updateData)
+        return updatedUser
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getFullBlackListUserForAdmin = async (data) => {
+    try {
+        const user = await UserModel.getFullBlackListUserForAdmin(data)
+        const transformUser = cloneDeep(user)
+        return transformUser
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getSearchUserForAdmin = async (data) => {
+    try {
+        const user = await UserModel.getSearchUserForAdmin(data)
+        const transformUser = cloneDeep(user)
+        return transformUser
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getSearchBlackListUserForAdmin = async (data) => {
+    try {
+        const user = await UserModel.getSearchBlackListUserForAdmin(data)
+        const transformUser = cloneDeep(user)
+        return transformUser
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const updateBlackListUserInformationForAdmin = async (phoneNumber, data) => {
+    try {
+        const updateData = {
+            ...data,
+            updateAt: Date.now()
+        }
+        const updatedUser = await UserModel.updateBlackListUserInformationForAdmin(phoneNumber, updateData)
+        return updatedUser
     } catch (error) {
         throw new Error(error)
     }
@@ -68,6 +124,11 @@ export const userService = {
     createNewAccountUser, 
     loginAccountUser, 
     getInformationAccountUserForAdmin,
-    getInformationAccountUser, 
-    updateAccountAdmin
+    getInformationAccountUser,
+    getFullUserForAdmin,
+    updateUserInformationForAdmin,
+    getFullBlackListUserForAdmin,
+    getSearchUserForAdmin,
+    getSearchBlackListUserForAdmin,
+    updateBlackListUserInformationForAdmin
 }

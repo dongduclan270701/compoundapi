@@ -6,16 +6,15 @@ import crypto from 'crypto'
 // Define Board collection
 const noticeName = 'noticeCompound'
 const orderSchema = Joi.object({
-    time: Joi.string().required(),
-    date: Joi.string().required(),
-    content: Joi.string().required(),
+    username: Joi.string().required(),
+    phoneNumber: Joi.string().required(),
     status: Joi.string().required(),
+    content: Joi.string().required(),
     _destroy: Joi.boolean().default(false),
-    orderId: Joi.string().required(),
     createDate: Joi.object({
         time: Joi.string().required(),
         date: Joi.string().required()
-    }),
+    }).required(),
     isReadCus: Joi.boolean().default(false),
     isReadAdmin: Joi.boolean().default(false)
 })
@@ -26,22 +25,7 @@ const validateSchema = async (data) => {
 
 const createNewNotice = async (data) => {
     try {
-        const date = new Date();
-        const minutes = date.getMinutes();
-        const hours = date.getHours();
-        const time = `${hours}:${minutes}`;
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        const today = `${year}-${month}-${day}`
-        const newData = { 
-            ...data, 
-            createDate:{
-                time: time, 
-                date: today
-            }
-        }
-        const value = await validateSchema(newData)
+        const value = await validateSchema(data)
         const result = await getDB().collection(noticeName).insertOne(value)
         return result
     } catch (error) {
@@ -54,10 +38,10 @@ const getFullNotice = async () => {
         const result = await getDB().collection(noticeName).aggregate([
             {
                 $match: {
-                    status: { $in:  ['Chờ xác nhận'] },
+                    status: { $in: ['Chờ xác nhận'] },
+                    isReadAdmin: false,
                     _destroy: false
                 }
-                
             }
         ]).toArray()
         return result

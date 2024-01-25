@@ -39,7 +39,6 @@ const loginAccountUser = async (req, res) => {
                     {
                         _id: result._id,
                         username: result.username,
-                        email: result.email,
                         phoneNumber: result.phoneNumber
                     },
                     process.env.TOKEN_SECRET_CUSTOMER
@@ -78,10 +77,72 @@ const getInformationAccountUser = async (req, res) => {
     }
 }
 
-const updateAccountAdmin = async (req, res) => {
+const getFullUserForAdmin = async (req, res) => {
     try {
-        const { email } = req.params
-        const result = await userService.updateAccountAdmin(email, req.body)
+        const data = req.query
+        const result = await userService.getFullUserForAdmin(data)
+        res.status(HttpStatusCode.OK).json(result)
+
+    } catch (error) {
+        res.status(HttpStatusCode.INTERNAL_SERVER).json({
+            error: error.message
+        })
+    }
+}
+
+const updateUserInformationForAdmin = async (req, res) => {
+    try {
+        const { phoneNumber } = req.params
+        const result = await userService.updateUserInformationForAdmin(phoneNumber, req.body)
+        res.status(HttpStatusCode.OK).json(result)
+    } catch (error) {
+        res.status(HttpStatusCode.INTERNAL_SERVER).json({
+            error: error.message
+        })
+    }
+}
+
+const getFullBlackListUserForAdmin = async (req, res) => {
+    try {
+        const data = req.query
+        const result = await userService.getFullBlackListUserForAdmin(data)
+        res.status(HttpStatusCode.OK).json(result)
+
+    } catch (error) {
+        res.status(HttpStatusCode.INTERNAL_SERVER).json({
+            error: error.message
+        })
+    }
+}
+
+const getSearchUserForAdmin = async (req, res) => {
+    try {
+        const data = req.query
+        const result = await userService.getSearchUserForAdmin(data)
+        res.status(HttpStatusCode.OK).json(result)
+    } catch (error) {
+        res.status(HttpStatusCode.INTERNAL_SERVER).json({
+            error: error.message
+        })
+    }
+}
+
+const getSearchBlackListUserForAdmin = async (req, res) => {
+    try {
+        const data = req.query
+        const result = await userService.getSearchBlackListUserForAdmin(data)
+        res.status(HttpStatusCode.OK).json(result)
+    } catch (error) {
+        res.status(HttpStatusCode.INTERNAL_SERVER).json({
+            error: error.message
+        })
+    }
+}
+
+const updateBlackListUserInformationForAdmin = async (req, res) => {
+    try {
+        const { phoneNumber } = req.params
+        const result = await userService.updateBlackListUserInformationForAdmin(phoneNumber, req.body)
         res.status(HttpStatusCode.OK).json(result)
     } catch (error) {
         res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -95,5 +156,10 @@ export const userController = {
     loginAccountUser,
     getInformationAccountUserForAdmin,
     getInformationAccountUser,
-    updateAccountAdmin
+    getFullUserForAdmin,
+    updateUserInformationForAdmin,
+    getFullBlackListUserForAdmin,
+    getSearchUserForAdmin,
+    getSearchBlackListUserForAdmin,
+    updateBlackListUserInformationForAdmin
 }

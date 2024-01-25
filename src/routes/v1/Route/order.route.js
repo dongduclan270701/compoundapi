@@ -53,8 +53,8 @@ const router = express.Router()
 router.route('/createOrder')
     .post(orderValidation.createNewOrder, orderController.createNewOrder)
 
-// router.route('/search')
-//     .get(authCustomer, orderCustomerController.getSearchOrder)
+router.route('/searchOrder')
+    .get(authAdmin, orderController.getSearchOrder)
 
 router.route('/orderForAdmin')
     .get(authAdmin, orderController.getFullOrderForAdmin)

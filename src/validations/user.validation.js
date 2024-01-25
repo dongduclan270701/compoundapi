@@ -5,8 +5,7 @@ const createNewAccountUser = async (req, res, next) => {
     const condition = Joi.object({
         username: Joi.string().required(),
         password: Joi.string().required(),
-        phoneNumber: Joi.string().required(),
-        email: Joi.string().required()
+        phoneNumber: Joi.string().required()
     })
     try {
         await condition.validateAsync(req.body, { abortEarly: false })
@@ -18,7 +17,7 @@ const createNewAccountUser = async (req, res, next) => {
     }
 }
 
-const updateAccountUser = async (req, res, next) => {
+const updateUserInformationForAdmin = async (req, res, next) => {
     const condition = Joi.object({
     })
     try {
@@ -31,4 +30,4 @@ const updateAccountUser = async (req, res, next) => {
     }
 }
 
-export const UserValidation = { createNewAccountUser, updateAccountUser }
+export const UserValidation = { createNewAccountUser, updateUserInformationForAdmin }

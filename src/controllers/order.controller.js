@@ -79,8 +79,5 @@ export const orderController = {
     getFullOrderForAdmin,
     getFullOrderInformationForAdmin,
     updateOrderInformationForAdmin,
-
-
-    getSearchOrder,
-    ratingOrder
+    getSearchOrder
 }

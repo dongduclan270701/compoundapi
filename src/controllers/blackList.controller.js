@@ -1,11 +1,16 @@
-import { noticeService } from '*/services/notice.service'
+import { blackListService } from '*/services/blackList.service'
 import { HttpStatusCode } from '*/utils/constants'
 
-const createNewNotice = async (req, res) => {
+const createNewBlackListAccountUser = async (req, res) => {
     try {
         const data = req.body
-        const result = await noticeService.createNewNotice(data)
-        res.status(HttpStatusCode.OK).json(result)
+        const result = await blackListService.createNewBlackListAccountUser(data)
+        if (result.message === 'Phone number already exists') {
+            res.status(HttpStatusCode.OK).json('Phone number already exists')
+        }
+        else {
+            res.status(HttpStatusCode.CREATED).json(result)
+        }
     } catch (error) {
         res.status(HttpStatusCode.INTERNAL_SERVER).json({
             error: error.message
@@ -13,10 +18,12 @@ const createNewNotice = async (req, res) => {
     }
 }
 
-const getFullNotice = async (req, res) => {
+const getFullBlackListUserForAdmin = async (req, res) => {
     try {
-        const result = await noticeService.getFullNotice()
+        const data = req.query
+        const result = await blackListService.getFullBlackListUserForAdmin(data)
         res.status(HttpStatusCode.OK).json(result)
+
     } catch (error) {
         res.status(HttpStatusCode.INTERNAL_SERVER).json({
             error: error.message
@@ -24,9 +31,10 @@ const getFullNotice = async (req, res) => {
     }
 }
 
-const getUpdateNotice = async (req, res) => {
+const getSearchBlackListUserForAdmin = async (req, res) => {
     try {
-        const result = await noticeService.getUpdateNotice(req.body)
+        const data = req.query
+        const result = await blackListService.getSearchBlackListUserForAdmin(data)
         res.status(HttpStatusCode.OK).json(result)
     } catch (error) {
         res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -35,8 +43,34 @@ const getUpdateNotice = async (req, res) => {
     }
 }
 
-export const noticeController = { 
-    createNewNotice,
-    getFullNotice,
-    getUpdateNotice
+const updateBlackListUserInformationForAdmin = async (req, res) => {
+    try {
+        const { phoneNumber } = req.params
+        const result = await blackListService.updateBlackListUserInformationForAdmin(phoneNumber, req.body)
+        res.status(HttpStatusCode.OK).json(result)
+    } catch (error) {
+        res.status(HttpStatusCode.INTERNAL_SERVER).json({
+            error: error.message
+        })
+    }
+}
+
+const getBlackListUserForAdmin = async (req, res) => {
+    try {
+        const { phoneNumber } = req.params
+        const result = await blackListService.getBlackListUserForAdmin(phoneNumber)
+        res.status(HttpStatusCode.OK).json(result)
+    } catch (error) {
+        res.status(HttpStatusCode.INTERNAL_SERVER).json({
+            error: error.message
+        })
+    }
+}
+
+export const blackListController = {
+    createNewBlackListAccountUser,
+    getFullBlackListUserForAdmin,
+    getSearchBlackListUserForAdmin,
+    updateBlackListUserInformationForAdmin,
+    getBlackListUserForAdmin
 }

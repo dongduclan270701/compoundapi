@@ -59,14 +59,6 @@ const getSearchOrder = async (data) => {
     }
 }
 
-const ratingOrder = async (id, data) => {
-    try {
-        const updatedRatingOrder = await orderModel.ratingOrder(id, data)
-        return updatedRatingOrder
-    } catch (error) {
-        throw new Error(error)
-    }
-}
 
 export const orderService = { 
     createNewOrder,
@@ -75,6 +67,5 @@ export const orderService = {
     updateOrderInformationForAdmin,
 
 
-    getSearchOrder,
-    ratingOrder
+    getSearchOrder
 }

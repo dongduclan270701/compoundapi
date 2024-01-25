@@ -1,8 +1,9 @@
 import express from 'express'
-import { blackListValidation } from '*/validations/blackList.validation'
 import { blackListController } from '*/controllers/blackList.controller'
+import { BlackListValidation } from '*/validations/blackList.validation'
 import jwt from 'jsonwebtoken'
 import { HttpStatusCode } from '*/utils/constants'
+const router = express.Router()
 
 const authAdmin = (req, res, next) => {
     const token = req.header('auth-token-admin')
@@ -28,33 +29,18 @@ const authAdmin = (req, res, next) => {
         }
     }
 }
-const authUser = (req, res, next) => {
-    const token = req.header('auth-token-user')
-    if (!token) {
-        return res.status(HttpStatusCode.UNAUTHORIZED).json('Access Denied')
-    }
-    else {
-        try {
-            const verified = jwt.verify(token, process.env.TOKEN_SECRET_CUSTOMER)
-            req.result = verified
-            if (verified) {
-                next()
-            } else {
-                return res.status(401).json({ message: 'You do not have sufficient permissions to perform this function' })
-            }
-        } catch (error) {
-            res.status(HttpStatusCode.INTERNAL_SERVER).send('Invalid token')
-        }
-    }
-}
 
-const router = express.Router()
+router.route('/blackListAccountUser')
+    .post(authAdmin, BlackListValidation.createNewBlackListAccountUser, blackListController.createNewBlackListAccountUser)
+    
+router.route('/blackListAccountUserForAdmin/:phoneNumber')
+    .get(authAdmin, blackListController.getBlackListUserForAdmin)
+    .put(authAdmin, blackListController.updateBlackListUserInformationForAdmin)
 
-router.route('/createBlackList')
-    .post(blackListValidation.createNewNotice, blackListController.createNewNotice)
+router.route('/searchBlackListAccountUser')
+    .get(authAdmin, blackListController.getSearchBlackListUserForAdmin)
 
-router.route('/blackList')
-    .get(authAdmin, blackListController.getFullNotice)
-    .put(authAdmin, blackListController.getUpdateNotice)
+router.route('/blackListAccountUserForAdmin')
+    .get(authAdmin, blackListController.getFullBlackListUserForAdmin)
 
 export const blackListRoutes = router
