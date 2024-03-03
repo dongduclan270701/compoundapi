@@ -83,7 +83,7 @@ const createNewOrder = async (data) => {
         })
         const info = await transporter.sendMail({
             from: '"Thông báo đặt xe ghép!" <dongduclan270701@gmail.com>', // sender address
-            to: 'dongduclan277@gmail.com', // list of receivers
+            to: 'ducanhdong.2411@gmail.com', // list of receivers
             subject: `Đơn đặt hàng mới từ ${newData.username}`, // Subject line
             text: `${newData.username} - ${newData.phoneNumber} - ${newData.pick_up_location} - ${newData.destination} - ${newData.note} - ${newData.createDate.time} ${newData.createDate.date}`, // plain text body
             html: `
