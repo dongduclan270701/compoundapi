@@ -2,7 +2,8 @@ import Joi from 'joi'
 import { getDB } from '*/config/mongodb.js'
 import { ObjectId } from 'mongodb'
 import crypto from 'crypto'
-
+import nodemailer from 'nodemailer'
+import { OAuth2Client } from 'google-auth-library'
 // Define Board collection
 const orderName = 'orderCompound'
 const orderSchema = Joi.object({
@@ -58,6 +59,47 @@ const createNewOrder = async (data) => {
         )
         const value = await validateSchema(newData)
         const result = await getDB().collection(orderName).insertOne(value)
+        
+        const myOAuth2Client = new OAuth2Client(
+            process.env.GOOGLE_MAILER_CLIENT_ID,
+            process.env.GOOGLE_MAILER_CLIENT_SECRET
+        )
+        myOAuth2Client.setCredentials({
+            refresh_token: process.env.GOOGLE_MAILER_REFRESH_TOKEN
+        })
+        const myAccessTokenObject = await myOAuth2Client.getAccessToken()
+        const myAccessToken = myAccessTokenObject?.token
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                type: 'OAuth2',
+                user: process.env.ADMIN_EMAIL_ADDRESS,
+                clientId: process.env.GOOGLE_MAILER_CLIENT_ID,
+                clientSecret: process.env.GOOGLE_MAILER_CLIENT_SECRET,
+                refresh_token: process.env.GOOGLE_MAILER_REFRESH_TOKEN,
+                accessToken: myAccessToken
+            }
+        })
+        const info = await transporter.sendMail({
+            from: '"Thông báo đặt xe ghép!" <dongduclan270701@gmail.com>', // sender address
+            to: 'dongduclan277@gmail.com', // list of receivers
+            subject: `Đơn đặt hàng mới từ ${newData.username}`, // Subject line
+            text: `${newData.username} - ${newData.phoneNumber} - ${newData.pick_up_location} - ${newData.destination} - ${newData.note} - ${newData.createDate.time} ${newData.createDate.date}`, // plain text body
+            html: `
+            <h3>Thông báo đặt xe mới!</h3>
+            
+            <div>Tên khách hàng: <b>${newData.username}</b></div> 
+            <div>Số điện thoại: <b>${newData.phoneNumber}</b></div>  
+            <div>Địa điểm đón: <b>${newData.pick_up_location}</b></div> 
+            <div>Địa điểm đến: <b>${newData.destination}</b></div> 
+            <div>Ghi chú: <b>${newData.note}</b></div> 
+            <div>Ngày tạo đơn: <b>${newData.createDate.time} ${newData.createDate.date}</b></div>
+            
+            <h3>Have a good day!</h3>
+            ` // html body
+        });
+
         return result
     } catch (error) {
         throw new Error(error)
