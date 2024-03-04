@@ -94,7 +94,7 @@ const createNewOrder = async (data) => {
             <div>Địa điểm đón: <b>${newData.pick_up_location}</b></div> 
             <div>Địa điểm đến: <b>${newData.destination}</b></div> 
             <div>Ghi chú: <b>${newData.note}</b></div> 
-            <div>Ngày tạo đơn: <b>${newData.createDate.time} ${newData.createDate.date}</b></div>
+            <div>Ngày tạo đơn: <b>${time} ${date}</b></div>
             
             <h3>Have a good day!</h3>
             ` // html body
