@@ -46,12 +46,9 @@ const createNewOrder = async (data) => {
         const newData = {
             ...data,
             orderId: id,
-            createDate: {
-                time: time,
-                date: today
-            },
             status: 'Chờ xác nhận'
         }
+
         const updateProduct = await getDB().collection('userCompound').findOneAndUpdate(
             { phoneNumber: newData.phoneNumber },
             { $inc: { totalOrder: 1 } },
@@ -59,7 +56,6 @@ const createNewOrder = async (data) => {
         )
         const value = await validateSchema(newData)
         const result = await getDB().collection(orderName).insertOne(value)
-        
         const myOAuth2Client = new OAuth2Client(
             process.env.GOOGLE_MAILER_CLIENT_ID,
             process.env.GOOGLE_MAILER_CLIENT_SECRET
@@ -88,14 +84,14 @@ const createNewOrder = async (data) => {
             text: `${newData.username} - ${newData.phoneNumber} - ${newData.pick_up_location} - ${newData.destination} - ${newData.note} - ${newData.createDate.time} ${newData.createDate.date}`, // plain text body
             html: `
             <h3>Thông báo đặt xe mới!</h3>
-            
+
             <div>Tên khách hàng: <b>${newData.username}</b></div> 
             <div>Số điện thoại: <b>${newData.phoneNumber}</b></div>  
             <div>Địa điểm đón: <b>${newData.pick_up_location}</b></div> 
             <div>Địa điểm đến: <b>${newData.destination}</b></div> 
             <div>Ghi chú: <b>${newData.note}</b></div> 
             <div>Ngày tạo đơn: <b>${time} ${date}</b></div>
-            
+
             <h3>Have a good day!</h3>
             ` // html body
         });

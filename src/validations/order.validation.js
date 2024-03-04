@@ -7,7 +7,11 @@ const createNewOrder = async (req, res, next) => {
         destination: Joi.string().required(),
         note: Joi.string().required(),
         username: Joi.string().required(),
-        phoneNumber: Joi.string().required()
+        phoneNumber: Joi.string().required(),
+        createDate: Joi.object({
+            time: Joi.string().required(),
+            date: Joi.string().required()
+        })
     })
     try {
         await condition.validateAsync(req.body, { abortEarly: false })
