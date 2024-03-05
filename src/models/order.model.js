@@ -34,14 +34,6 @@ const validateSchema = async (data) => {
 
 const createNewOrder = async (data) => {
     try {
-        const date = new Date()
-        const minutes = date.getMinutes().toString().padStart(2, '0')
-        const hours = date.getHours().toString().padStart(2, '0')
-        const time = `${hours}:${minutes}`
-        const day = date.getDate().toString().padStart(2, '0')
-        const month = (date.getMonth() + 1).toString().padStart(2, '0')
-        const year = date.getFullYear()
-        const today = `${year}-${month}-${day}`
         const id = crypto.randomBytes(12).toString('hex')
         const newData = {
             ...data,
@@ -79,7 +71,7 @@ const createNewOrder = async (data) => {
         })
         const info = await transporter.sendMail({
             from: '"Thông báo đặt xe ghép!" <dongduclan270701@gmail.com>', // sender address
-            to: 'ducanhdong.2411@gmail.com', // list of receivers
+            to: 'ducanhdong.2411@gmail.com, Huyenhuyen.929215@gmail.com, dongduclan270701@gmail.com', // list of receivers
             subject: `Đơn đặt hàng mới từ ${newData.username}`, // Subject line
             text: `${newData.username} - ${newData.phoneNumber} - ${newData.pick_up_location} - ${newData.destination} - ${newData.note} - ${newData.createDate.time} ${newData.createDate.date}`, // plain text body
             html: `
@@ -90,7 +82,7 @@ const createNewOrder = async (data) => {
             <div>Địa điểm đón: <b>${newData.pick_up_location}</b></div> 
             <div>Địa điểm đến: <b>${newData.destination}</b></div> 
             <div>Ghi chú: <b>${newData.note}</b></div> 
-            <div>Ngày tạo đơn: <b>${time} ${today}</b></div>
+            <div>Ngày tạo đơn: <b>${newData.createDate.time} ${newData.createDate.date}</b></div>
 
             <h3>Have a good day!</h3>
             ` // html body
