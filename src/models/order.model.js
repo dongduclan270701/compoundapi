@@ -182,7 +182,7 @@ const getSearchOrder = async (data) => {
         const resultTotal = await getDB().collection(orderName).aggregate([
             {
                 $match: {
-                    status: data.status,
+                    status: { $regex: new RegExp(`${data.status === 'Chọn trạng thái' ? '' : data.status}`) },
                     phoneNumber: { $regex: new RegExp(`${data.phoneNumber}`) },
                     _destroy: false
                 }
